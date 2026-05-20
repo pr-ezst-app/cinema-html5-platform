@@ -738,6 +738,9 @@ export default function Index() {
   const [watchlist, setWatchlist] = useState<number[]>(defaultWatchlist);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [playingMovie, setPlayingMovie] = useState<Movie | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const toggleWatchlist = (id: number) => {
     setWatchlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
@@ -747,6 +750,24 @@ export default function Index() {
     setSelectedMovie(null);
     setPlayingMovie(movie);
   };
+
+  const handleMovieClick = (movie: Movie) => {
+    setSearchOpen(false);
+    setSearchQuery('');
+    setSelectedMovie(movie);
+  };
+
+  const openSearch = () => {
+    setSearchOpen(true);
+    setTimeout(() => searchRef.current?.focus(), 50);
+  };
+
+  const searchResults = searchQuery.trim().length > 0
+    ? movies.filter(m =>
+        m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        m.genre.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   const navItems: { id: Page; icon: string; label: string }[] = [
     { id: 'home', icon: 'Home', label: 'Accueil' },
@@ -759,14 +780,22 @@ export default function Index() {
       {/* Top Nav */}
       <header className="fixed top-0 left-0 right-0 z-40 glass border-b border-white/5">
         <div className="flex items-center justify-between px-8 md:px-16 h-16">
-          <div className="font-display text-2xl tracking-widest text-white">
-            N<span className="text-[#e63946]">O</span>IR
+          <div
+            className="flex items-center gap-2 cursor-pointer select-none"
+            onClick={() => { setPage('home'); setSearchOpen(false); }}
+          >
+            <div className="w-8 h-8 rounded-lg bg-[#e63946] flex items-center justify-center">
+              <Icon name="Film" size={16} className="text-white" />
+            </div>
+            <span className="font-display text-xl tracking-widest text-white">
+              ÉCO<span className="text-[#e63946]">FILM</span>
+            </span>
           </div>
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map(item => (
               <button
                 key={item.id}
-                onClick={() => setPage(item.id)}
+                onClick={() => { setPage(item.id); setSearchOpen(false); }}
                 className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${page === item.id ? 'text-white bg-white/8' : 'text-gray-400 hover:text-white'}`}
               >
                 <Icon name={item.icon} size={16} fallback="Circle" />
@@ -778,15 +807,15 @@ export default function Index() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <button className="w-9 h-9 rounded-full glass flex items-center justify-center text-gray-400 hover:text-white transition-all">
+            <button
+              onClick={openSearch}
+              className="w-9 h-9 rounded-full glass flex items-center justify-center text-gray-400 hover:text-white transition-all"
+            >
               <Icon name="Search" size={16} />
-            </button>
-            <button className="w-9 h-9 rounded-full glass flex items-center justify-center text-gray-400 hover:text-white transition-all">
-              <Icon name="Bell" size={16} />
             </button>
             <div
               className="w-8 h-8 rounded-full bg-gradient-to-br from-[#e63946] to-red-800 flex items-center justify-center font-display text-white text-sm cursor-pointer"
-              onClick={() => setPage('profile')}
+              onClick={() => { setPage('profile'); setSearchOpen(false); }}
             >
               A
             </div>
@@ -794,12 +823,54 @@ export default function Index() {
         </div>
       </header>
 
+      {/* Search overlay */}
+      {searchOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col items-center pt-24 px-4">
+          <div className="w-full max-w-xl">
+            <div className="flex items-center gap-3 glass rounded-2xl px-5 py-3 mb-4 border border-white/10">
+              <Icon name="Search" size={18} className="text-gray-400" />
+              <input
+                ref={searchRef}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Rechercher un film, un genre..."
+                className="flex-1 bg-transparent text-white placeholder-gray-500 outline-none text-base"
+              />
+              <button onClick={() => { setSearchOpen(false); setSearchQuery(''); }}>
+                <Icon name="X" size={18} className="text-gray-400 hover:text-white transition-colors" />
+              </button>
+            </div>
+            {searchResults.length > 0 && (
+              <div className="glass rounded-2xl overflow-hidden border border-white/10">
+                {searchResults.map((m, i) => (
+                  <button
+                    key={m.id}
+                    onClick={() => handleMovieClick(m)}
+                    className={`w-full flex items-center gap-4 px-5 py-3 hover:bg-white/5 transition-all text-left ${i > 0 ? 'border-t border-white/5' : ''}`}
+                  >
+                    <img src={m.img} alt={m.title} className="w-10 h-14 rounded-lg object-cover flex-shrink-0" />
+                    <div>
+                      <div className="text-white font-semibold">{m.title}</div>
+                      <div className="text-gray-400 text-sm">{m.genre} · {m.year}</div>
+                    </div>
+                    <Icon name="Play" size={16} className="text-[#e63946] ml-auto" />
+                  </button>
+                ))}
+              </div>
+            )}
+            {searchQuery.trim().length > 0 && searchResults.length === 0 && (
+              <div className="text-center text-gray-500 mt-8">Aucun résultat pour « {searchQuery} »</div>
+            )}
+          </div>
+        </div>
+      )}
+
       <main className="pt-16">
         {page === 'home' && (
-          <HomePage onMovieClick={setSelectedMovie} watchlist={watchlist} onToggleWatchlist={toggleWatchlist} />
+          <HomePage onMovieClick={handleMovieClick} watchlist={watchlist} onToggleWatchlist={toggleWatchlist} />
         )}
         {page === 'watchlist' && (
-          <WatchlistPage watchlist={watchlist} onMovieClick={setSelectedMovie} onToggleWatchlist={toggleWatchlist} />
+          <WatchlistPage watchlist={watchlist} onMovieClick={handleMovieClick} onToggleWatchlist={toggleWatchlist} />
         )}
         {page === 'profile' && <ProfilePage />}
       </main>
@@ -810,7 +881,7 @@ export default function Index() {
           {navItems.map(item => (
             <button
               key={item.id}
-              onClick={() => setPage(item.id)}
+              onClick={() => { setPage(item.id); setSearchOpen(false); }}
               className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-all ${page === item.id ? 'text-[#e63946]' : 'text-gray-500'}`}
             >
               <Icon name={item.icon} size={20} fallback="Circle" />
