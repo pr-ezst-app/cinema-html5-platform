@@ -16,7 +16,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/pbrkL804c8yAv3zBZR4QPEafpAR.jpg`,
     description: "Un groupe d'explorateurs utilise un tunnel spatio-temporel découvert dans le système solaire pour parcourir des distances interstellaires, en quête d'une nouvelle demeure pour l'humanité.",
     progress: 65,
-    videoUrl: ''
+    videoUrl: 'https://nakastream.tv/player?title=Interstellar&id=543&poster=/1pnigkWWy8W032o9TKDneBa3eVK.jpg&type=movie'
   },
   {
     id: 2,
@@ -134,12 +134,19 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+function isDirectVideo(url: string) {
+  return /\.(mp4|webm|mkv|m3u8|ogg)(\?|$)/i.test(url);
+}
+
 function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState('0:00');
   const [duration, setDuration] = useState('0:00');
+
+  const isDirect = movie.videoUrl ? isDirectVideo(movie.videoUrl) : false;
 
   function formatTime(s: number) {
     const m = Math.floor(s / 60);
@@ -176,22 +183,25 @@ function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) 
   }
 
   function fullscreen() {
-    const v = videoRef.current;
-    if (v?.requestFullscreen) v.requestFullscreen();
+    if (isDirect) {
+      videoRef.current?.requestFullscreen();
+    } else {
+      iframeRef.current?.requestFullscreen();
+    }
   }
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === ' ') { e.preventDefault(); togglePlay(); }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, []);
+  }, [onClose]);
 
   return (
     <div className="fixed inset-0 z-[60] bg-black flex flex-col items-center justify-center">
       <div className="w-full max-w-5xl px-4 relative">
+
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div>
@@ -207,73 +217,99 @@ function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) 
           </button>
         </div>
 
-        {/* Video */}
-        <div className="relative group rounded-2xl overflow-hidden" style={{ boxShadow: '0 0 60px rgba(230,57,70,0.25)' }}>
-          {movie.videoUrl ? (
-            <video
-              ref={videoRef}
-              src={movie.videoUrl}
-              className="w-full rounded-2xl"
-              style={{ maxHeight: '70vh' }}
-              onTimeUpdate={handleTimeUpdate}
-              onLoadedMetadata={handleLoadedMetadata}
-              onClick={togglePlay}
-            />
-          ) : (
-            <div className="relative w-full bg-[#0d0d0d] rounded-2xl overflow-hidden flex items-center justify-center" style={{ minHeight: 400 }}>
-              <img src={movie.backdrop || movie.img} alt={movie.title} className="absolute inset-0 w-full h-full object-cover opacity-30" />
+        {/* Player */}
+        <div className="rounded-2xl overflow-hidden" style={{ boxShadow: '0 0 60px rgba(230,57,70,0.3)' }}>
+          {!movie.videoUrl && (
+            <div className="relative w-full bg-[#0d0d0d] flex items-center justify-center" style={{ minHeight: 420 }}>
+              <img src={movie.backdrop || movie.img} alt={movie.title} className="absolute inset-0 w-full h-full object-cover opacity-25" />
               <div className="relative z-10 text-center">
                 <div className="w-20 h-20 rounded-full bg-[#e63946]/20 border border-[#e63946]/40 flex items-center justify-center mx-auto mb-4">
                   <Icon name="Film" size={36} className="text-[#e63946]" />
                 </div>
                 <p className="text-white font-display text-2xl mb-2">{movie.title}</p>
-                <p className="text-gray-400 text-sm">Ajoutez l'URL de la vidéo pour lancer la lecture</p>
+                <p className="text-gray-400 text-sm">Aucune URL vidéo configurée</p>
               </div>
             </div>
           )}
 
-          {/* Overlay controls (always visible on hover or no video) */}
-          <div className={`absolute inset-0 flex items-center justify-center ${movie.videoUrl ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'} transition-opacity`}>
-            <button
-              onClick={togglePlay}
-              className="w-16 h-16 rounded-full bg-[#e63946]/90 hover:bg-[#e63946] flex items-center justify-center transition-all hover:scale-110 active:scale-95"
-            >
-              <Icon name={playing ? "Pause" : "Play"} size={28} className="text-white" />
-            </button>
-          </div>
+          {movie.videoUrl && isDirect && (
+            <div className="relative group">
+              <video
+                ref={videoRef}
+                src={movie.videoUrl}
+                className="w-full"
+                style={{ maxHeight: '72vh', background: '#000' }}
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
+                onClick={togglePlay}
+              />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="w-14 h-14 rounded-full bg-[#e63946]/80 flex items-center justify-center">
+                  <Icon name={playing ? "Pause" : "Play"} size={24} className="text-white" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {movie.videoUrl && !isDirect && (
+            <iframe
+              ref={iframeRef}
+              src={movie.videoUrl}
+              className="w-full border-0"
+              style={{ height: '72vh', minHeight: 420 }}
+              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+              allowFullScreen
+              title={movie.title}
+            />
+          )}
         </div>
 
-        {/* Controls bar */}
-        <div className="mt-3 glass rounded-xl px-4 py-3">
-          <div
-            className="w-full h-2 bg-[#2a2a2a] rounded-full mb-3 cursor-pointer relative overflow-hidden"
-            onClick={handleSeek}
-          >
+        {/* Controls bar — only for direct MP4 */}
+        {isDirect && movie.videoUrl && (
+          <div className="mt-3 glass rounded-xl px-4 py-3">
             <div
-              className="h-full bg-gradient-to-r from-[#e63946] to-red-400 rounded-full transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={togglePlay}
-                className="bg-[#e63946] hover:bg-red-400 text-white px-4 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
-              >
-                <Icon name={playing ? "Pause" : "Play"} size={14} />
-                {playing ? 'Pause' : 'Play'}
-              </button>
-              <span className="text-gray-400 text-xs font-mono">{currentTime} / {duration}</span>
+              className="w-full h-2 bg-[#2a2a2a] rounded-full mb-3 cursor-pointer overflow-hidden"
+              onClick={handleSeek}
+            >
+              <div
+                className="h-full bg-gradient-to-r from-[#e63946] to-red-400 rounded-full transition-all"
+                style={{ width: `${progress}%` }}
+              />
             </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={togglePlay}
+                  className="bg-[#e63946] hover:bg-red-400 text-white px-4 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
+                >
+                  <Icon name={playing ? "Pause" : "Play"} size={14} />
+                  {playing ? 'Pause' : 'Play'}
+                </button>
+                <span className="text-gray-400 text-xs font-mono">{currentTime} / {duration}</span>
+              </div>
+              <button
+                onClick={fullscreen}
+                className="glass px-3 py-1.5 rounded-lg text-gray-300 hover:text-white text-sm flex items-center gap-2 transition-all"
+              >
+                <Icon name="Maximize" size={14} />
+                Plein écran
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Fullscreen button for iframe */}
+        {!isDirect && movie.videoUrl && (
+          <div className="mt-3 flex justify-end">
             <button
               onClick={fullscreen}
-              className="glass px-3 py-1.5 rounded-lg text-gray-300 hover:text-white text-sm flex items-center gap-2 transition-all"
+              className="glass px-4 py-2 rounded-lg text-gray-300 hover:text-white text-sm flex items-center gap-2 transition-all"
             >
               <Icon name="Maximize" size={14} />
               Plein écran
             </button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
