@@ -29,7 +29,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/s3TBrRGB1iav7gFOCNx3H31MoES.jpg`,
     description: "Un voleur qui s'immisce dans les rêves de ses cibles pour leur dérober leurs secrets se voit proposer une mission encore plus complexe : implanter une idée dans l'esprit de quelqu'un.",
     progress: 0,
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1'
+    videoUrl: ''
   },
   {
     id: 3,
