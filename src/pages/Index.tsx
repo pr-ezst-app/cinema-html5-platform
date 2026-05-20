@@ -1,31 +1,126 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 
-const HERO_IMG = 'https://cdn.ezst.app/projects/d8fde606-b525-4097-b42f-85a185750d88/files/7382f7f4-e82e-4f83-a9dc-f852af392f14.jpg';
-const GRID_IMG = 'https://cdn.ezst.app/projects/d8fde606-b525-4097-b42f-85a185750d88/files/3f813d59-9a71-4a21-8458-a985737272f6.jpg';
-const SCIFI_IMG = 'https://cdn.ezst.app/projects/d8fde606-b525-4097-b42f-85a185750d88/files/4734d4eb-2279-4bc7-9d70-f29e35f9cecf.jpg';
+const TMDB = 'https://image.tmdb.org/t/p/w500';
+const TMDB_BACK = 'https://image.tmdb.org/t/p/w1280';
 
 const movies = [
-  { id: 1, title: 'Eclipse Protocol', genre: 'Sci-Fi', year: 2024, rating: 8.4, duration: '2h 18m', img: SCIFI_IMG, progress: 65 },
-  { id: 2, title: 'The Last Signal', genre: 'Thriller', year: 2024, rating: 7.9, duration: '1h 52m', img: HERO_IMG, progress: 0 },
-  { id: 3, title: 'Noir City', genre: 'Crime', year: 2023, rating: 8.1, duration: '2h 05m', img: GRID_IMG, progress: 30 },
-  { id: 4, title: 'Crimson Tide', genre: 'Drama', year: 2024, rating: 7.6, duration: '1h 48m', img: SCIFI_IMG, progress: 0 },
-  { id: 5, title: 'Deep Horizon', genre: 'Action', year: 2024, rating: 8.8, duration: '2h 31m', img: HERO_IMG, progress: 0 },
-  { id: 6, title: 'Ghost Protocol', genre: 'Spy', year: 2023, rating: 7.3, duration: '2h 12m', img: GRID_IMG, progress: 88 },
-  { id: 7, title: 'Shadowlands', genre: 'Mystery', year: 2024, rating: 8.2, duration: '1h 59m', img: SCIFI_IMG, progress: 0 },
-  { id: 8, title: 'Neon Requiem', genre: 'Drama', year: 2024, rating: 7.8, duration: '2h 02m', img: HERO_IMG, progress: 0 },
+  {
+    id: 1,
+    title: 'Interstellar',
+    genre: 'Sci-Fi',
+    year: 2014,
+    rating: 8.7,
+    duration: '2h 49m',
+    img: `${TMDB}/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg`,
+    backdrop: `${TMDB_BACK}/pbrkL804c8yAv3zBZR4QPEafpAR.jpg`,
+    description: "Un groupe d'explorateurs utilise un tunnel spatio-temporel découvert dans le système solaire pour parcourir des distances interstellaires, en quête d'une nouvelle demeure pour l'humanité.",
+    progress: 65,
+    videoUrl: ''
+  },
+  {
+    id: 2,
+    title: 'Inception',
+    genre: 'Thriller',
+    year: 2010,
+    rating: 8.8,
+    duration: '2h 28m',
+    img: `${TMDB}/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg`,
+    backdrop: `${TMDB_BACK}/s3TBrRGB1iav7gFOCNx3H31MoES.jpg`,
+    description: "Un voleur qui s'immisce dans les rêves de ses cibles pour leur dérober leurs secrets se voit proposer une mission encore plus complexe : implanter une idée dans l'esprit de quelqu'un.",
+    progress: 0,
+    videoUrl: ''
+  },
+  {
+    id: 3,
+    title: 'The Dark Knight',
+    genre: 'Action',
+    year: 2008,
+    rating: 9.0,
+    duration: '2h 32m',
+    img: `${TMDB}/qJ2tW6WMUDux911r6m7haRef0WH.jpg`,
+    backdrop: `${TMDB_BACK}/hkBaDkMWbLaf8B1lsWsqX7an5lu.jpg`,
+    description: "Batman relève le plus grand défi de son existence avec l'aide du lieutenant Gordon et du procureur Harvey Dent lorsque le Joker, un criminel sadique et ingénieux, plonge Gotham City dans le chaos.",
+    progress: 30,
+    videoUrl: ''
+  },
+  {
+    id: 4,
+    title: 'Pulp Fiction',
+    genre: 'Crime',
+    year: 1994,
+    rating: 8.9,
+    duration: '2h 34m',
+    img: `${TMDB}/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg`,
+    backdrop: `${TMDB_BACK}/4cDFJr4HnXN5AdPw4AKrmLlMWdO.jpg`,
+    description: "Los Angeles. Alors que Pumpkin et Honey Bunny braquent un restaurant, Jules et Vincent, deux tueurs à la solde de Marsellus Wallace, récupèrent une mallette pour leur patron.",
+    progress: 0,
+    videoUrl: ''
+  },
+  {
+    id: 5,
+    title: 'The Matrix',
+    genre: 'Sci-Fi',
+    year: 1999,
+    rating: 8.7,
+    duration: '2h 16m',
+    img: `${TMDB}/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg`,
+    backdrop: `${TMDB_BACK}/fNG7i7RqMErkcqhohV2a6cV1Ehy.jpg`,
+    description: "Thomas Anderson mène une double vie : le jour il travaille dans une entreprise d'informatique, et la nuit il est un hacker qui se fait appeler Neo. Un homme nommé Morpheus lui révèle la vérité sur le monde.",
+    progress: 88,
+    videoUrl: ''
+  },
+  {
+    id: 6,
+    title: 'Parasite',
+    genre: 'Drame',
+    year: 2019,
+    rating: 8.5,
+    duration: '2h 12m',
+    img: `${TMDB}/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg`,
+    backdrop: `${TMDB_BACK}/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg`,
+    description: "Toute la famille de Ki-taek est au chômage. Elle s'intéresse à la richissime famille Park, quand leur fils Ki-woo est recommandé pour être tuteur en anglais de leur fille. Une opportunité qui va engendrer des événements inattendus.",
+    progress: 0,
+    videoUrl: ''
+  },
+  {
+    id: 7,
+    title: 'Fight Club',
+    genre: 'Drame',
+    year: 1999,
+    rating: 8.8,
+    duration: '2h 19m',
+    img: `${TMDB}/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg`,
+    backdrop: `${TMDB_BACK}/hZkgoQYus5vegHoetLkCJzb17zJ.jpg`,
+    description: "Un employé de bureau insomniaque et dépressif rencontre un vendeur de savon charismatique nommé Tyler Durden. Ensemble, ils forment un club de combat clandestin.",
+    progress: 0,
+    videoUrl: ''
+  },
+  {
+    id: 8,
+    title: 'Gladiator',
+    genre: 'Action',
+    year: 2000,
+    rating: 8.5,
+    duration: '2h 35m',
+    img: `${TMDB}/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg`,
+    backdrop: `${TMDB_BACK}/6WBIzCgmDCYrqh64yDREGeDk9d3.jpg`,
+    description: "Maximus est le général le plus respecté de Rome. Trahi et condamné à mort par Commode, fils de l'Empereur, il survit et devient gladiateur pour venger sa famille et son honneur.",
+    progress: 0,
+    videoUrl: ''
+  },
 ];
 
 const categories = [
-  { name: 'Action & Adventure', icon: 'Zap', count: 248 },
+  { name: 'Action & Aventure', icon: 'Zap', count: 248 },
   { name: 'Crime & Thriller', icon: 'Eye', count: 183 },
-  { name: 'Sci-Fi & Fantasy', icon: 'Rocket', count: 312 },
-  { name: 'Drama', icon: 'Heart', count: 421 },
-  { name: 'Documentary', icon: 'Film', count: 156 },
-  { name: 'Horror', icon: 'Ghost', count: 94 },
+  { name: 'Science-Fiction', icon: 'Rocket', count: 312 },
+  { name: 'Drame', icon: 'Heart', count: 421 },
+  { name: 'Documentaire', icon: 'Film', count: 156 },
+  { name: 'Horreur', icon: 'Ghost', count: 94 },
 ];
 
-const defaultWatchlist = [1, 3, 5, 6];
+const defaultWatchlist = [1, 3, 5];
 
 type Page = 'home' | 'watchlist' | 'profile';
 type Movie = typeof movies[0];
@@ -36,6 +131,151 @@ function StarRating({ rating }: { rating: number }) {
       <Icon name="Star" size={12} />
       {rating}
     </span>
+  );
+}
+
+function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState('0:00');
+  const [duration, setDuration] = useState('0:00');
+
+  function formatTime(s: number) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
+
+  function togglePlay() {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { v.play(); setPlaying(true); }
+    else { v.pause(); setPlaying(false); }
+  }
+
+  function handleTimeUpdate() {
+    const v = videoRef.current;
+    if (!v || !v.duration) return;
+    setProgress((v.currentTime / v.duration) * 100);
+    setCurrentTime(formatTime(v.currentTime));
+  }
+
+  function handleLoadedMetadata() {
+    const v = videoRef.current;
+    if (!v) return;
+    setDuration(formatTime(v.duration));
+  }
+
+  function handleSeek(e: React.MouseEvent<HTMLDivElement>) {
+    const v = videoRef.current;
+    if (!v || !v.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    v.currentTime = pct * v.duration;
+  }
+
+  function fullscreen() {
+    const v = videoRef.current;
+    if (v?.requestFullscreen) v.requestFullscreen();
+  }
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-black flex flex-col items-center justify-center">
+      <div className="w-full max-w-5xl px-4 relative">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <span className="font-display text-2xl text-white">{movie.title}</span>
+            <span className="ml-3 text-gray-500 text-sm">{movie.year} · {movie.duration}</span>
+          </div>
+          <button
+            onClick={onClose}
+            className="flex items-center gap-2 glass px-3 py-2 rounded-lg text-gray-300 hover:text-white text-sm transition-all"
+          >
+            <Icon name="X" size={14} />
+            Fermer
+          </button>
+        </div>
+
+        {/* Video */}
+        <div className="relative group rounded-2xl overflow-hidden" style={{ boxShadow: '0 0 60px rgba(230,57,70,0.25)' }}>
+          {movie.videoUrl ? (
+            <video
+              ref={videoRef}
+              src={movie.videoUrl}
+              className="w-full rounded-2xl"
+              style={{ maxHeight: '70vh' }}
+              onTimeUpdate={handleTimeUpdate}
+              onLoadedMetadata={handleLoadedMetadata}
+              onClick={togglePlay}
+            />
+          ) : (
+            <div className="relative w-full bg-[#0d0d0d] rounded-2xl overflow-hidden flex items-center justify-center" style={{ minHeight: 400 }}>
+              <img src={movie.backdrop || movie.img} alt={movie.title} className="absolute inset-0 w-full h-full object-cover opacity-30" />
+              <div className="relative z-10 text-center">
+                <div className="w-20 h-20 rounded-full bg-[#e63946]/20 border border-[#e63946]/40 flex items-center justify-center mx-auto mb-4">
+                  <Icon name="Film" size={36} className="text-[#e63946]" />
+                </div>
+                <p className="text-white font-display text-2xl mb-2">{movie.title}</p>
+                <p className="text-gray-400 text-sm">Ajoutez l'URL de la vidéo pour lancer la lecture</p>
+              </div>
+            </div>
+          )}
+
+          {/* Overlay controls (always visible on hover or no video) */}
+          <div className={`absolute inset-0 flex items-center justify-center ${movie.videoUrl ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'} transition-opacity`}>
+            <button
+              onClick={togglePlay}
+              className="w-16 h-16 rounded-full bg-[#e63946]/90 hover:bg-[#e63946] flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            >
+              <Icon name={playing ? "Pause" : "Play"} size={28} className="text-white" />
+            </button>
+          </div>
+        </div>
+
+        {/* Controls bar */}
+        <div className="mt-3 glass rounded-xl px-4 py-3">
+          <div
+            className="w-full h-2 bg-[#2a2a2a] rounded-full mb-3 cursor-pointer relative overflow-hidden"
+            onClick={handleSeek}
+          >
+            <div
+              className="h-full bg-gradient-to-r from-[#e63946] to-red-400 rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={togglePlay}
+                className="bg-[#e63946] hover:bg-red-400 text-white px-4 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
+              >
+                <Icon name={playing ? "Pause" : "Play"} size={14} />
+                {playing ? 'Pause' : 'Play'}
+              </button>
+              <span className="text-gray-400 text-xs font-mono">{currentTime} / {duration}</span>
+            </div>
+            <button
+              onClick={fullscreen}
+              className="glass px-3 py-1.5 rounded-lg text-gray-300 hover:text-white text-sm flex items-center gap-2 transition-all"
+            >
+              <Icon name="Maximize" size={14} />
+              Plein écran
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -84,14 +324,15 @@ function HomePage({ onMovieClick, watchlist, onToggleWatchlist }: {
   watchlist: number[];
   onToggleWatchlist: (id: number) => void;
 }) {
-  const [activeTab, setActiveTab] = useState('All');
-  const tabs = ['All', 'Movies', 'Series', 'Documentaries'];
+  const [activeTab, setActiveTab] = useState('Tous');
+  const tabs = ['Tous', 'Films', 'Séries', 'Documentaires'];
+  const hero = movies[0];
 
   return (
     <div>
       {/* Hero */}
       <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        <img src={HERO_IMG} alt="Hero" className="w-full h-full object-cover" />
+        <img src={hero.backdrop || hero.img} alt={hero.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
 
@@ -99,30 +340,38 @@ function HomePage({ onMovieClick, watchlist, onToggleWatchlist }: {
           <div className="fade-in-up-1">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e63946]/20 border border-[#e63946]/40 text-[#e63946] text-xs font-semibold mb-4 uppercase tracking-widest">
               <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-[#e63946]" />
-              Now Trending
+              En Tendance
             </span>
           </div>
           <h1 className="font-display text-6xl md:text-8xl text-white leading-none mb-3 fade-in-up-2">
-            ECLIPSE<br /><span className="text-[#e63946]">PROTOCOL</span>
+            {hero.title.split(' ').map((w, i) => (
+              <span key={i}>{i === 0 ? w : <><br /><span className="text-[#e63946]">{w}</span></>}</span>
+            ))}
           </h1>
-          <p className="text-gray-300 text-base max-w-md mb-6 fade-in-up-3 font-light leading-relaxed">
-            In 2089, humanity's last satellite network is breached. One engineer holds the key to survival — or extinction.
+          <p className="text-gray-300 text-base max-w-md mb-6 fade-in-up-3 font-light leading-relaxed line-clamp-2">
+            {hero.description}
           </p>
           <div className="flex items-center gap-4 fade-in-up-4">
-            <button className="flex items-center gap-2 bg-[#e63946] hover:bg-red-400 text-white font-semibold px-7 py-3 rounded-lg transition-all hover:scale-105 active:scale-95">
+            <button
+              className="flex items-center gap-2 bg-[#e63946] hover:bg-red-400 text-white font-semibold px-7 py-3 rounded-lg transition-all hover:scale-105 active:scale-95"
+              onClick={() => onMovieClick(hero)}
+            >
               <Icon name="Play" size={18} />
-              Watch Now
+              Regarder
             </button>
-            <button className="flex items-center gap-2 glass text-white px-6 py-3 rounded-lg hover:bg-white/10 transition-all">
-              <Icon name="Plus" size={18} />
-              Watchlist
+            <button
+              className="flex items-center gap-2 glass text-white px-6 py-3 rounded-lg hover:bg-white/10 transition-all"
+              onClick={() => onToggleWatchlist(hero.id)}
+            >
+              <Icon name={watchlist.includes(hero.id) ? "BookmarkCheck" : "Plus"} size={18} />
+              {watchlist.includes(hero.id) ? 'Sauvegardé' : 'Ma liste'}
             </button>
             <div className="hidden md:flex items-center gap-3 ml-4 text-sm text-gray-400">
-              <StarRating rating={8.4} />
+              <StarRating rating={hero.rating} />
               <span>·</span>
-              <span>Sci-Fi</span>
+              <span>{hero.genre}</span>
               <span>·</span>
-              <span>2h 18m</span>
+              <span>{hero.duration}</span>
             </div>
           </div>
         </div>
@@ -130,7 +379,6 @@ function HomePage({ onMovieClick, watchlist, onToggleWatchlist }: {
 
       {/* Content */}
       <div className="px-8 md:px-16 mt-8">
-        {/* Tabs */}
         <div className="flex gap-1 bg-[#1a1a1a] p-1 rounded-xl w-fit mb-8">
           {tabs.map(t => (
             <button
@@ -147,10 +395,10 @@ function HomePage({ onMovieClick, watchlist, onToggleWatchlist }: {
         <section className="mb-10">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display text-3xl text-white tracking-wide">
-              TRENDING <span className="text-[#e63946]">NOW</span>
+              EN <span className="text-[#e63946]">TENDANCE</span>
             </h2>
             <button className="text-gray-400 hover:text-white text-sm flex items-center gap-1 transition-colors">
-              See all <Icon name="ChevronRight" size={16} />
+              Voir tout <Icon name="ChevronRight" size={16} />
             </button>
           </div>
           <div className="scroll-row">
@@ -161,24 +409,26 @@ function HomePage({ onMovieClick, watchlist, onToggleWatchlist }: {
         </section>
 
         {/* Continue Watching */}
-        <section className="mb-10">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-3xl text-white tracking-wide">
-              CONTINUE <span className="text-[#e63946]">WATCHING</span>
-            </h2>
-          </div>
-          <div className="scroll-row">
-            {movies.filter(m => m.progress > 0).map(m => (
-              <MovieCard key={m.id} movie={m} onClick={() => onMovieClick(m)} inWatchlist={watchlist.includes(m.id)} onToggleWatchlist={onToggleWatchlist} />
-            ))}
-          </div>
-        </section>
+        {movies.filter(m => m.progress > 0).length > 0 && (
+          <section className="mb-10">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="font-display text-3xl text-white tracking-wide">
+                CONTINUER <span className="text-[#e63946]">À REGARDER</span>
+              </h2>
+            </div>
+            <div className="scroll-row">
+              {movies.filter(m => m.progress > 0).map(m => (
+                <MovieCard key={m.id} movie={m} onClick={() => onMovieClick(m)} inWatchlist={watchlist.includes(m.id)} onToggleWatchlist={onToggleWatchlist} />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Categories */}
         <section className="mb-20">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display text-3xl text-white tracking-wide">
-              BROWSE <span className="text-[#e63946]">CATEGORIES</span>
+              CATÉGORIES
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -191,7 +441,7 @@ function HomePage({ onMovieClick, watchlist, onToggleWatchlist }: {
                   <Icon name={cat.icon} size={20} className="text-[#e63946]" fallback="Film" />
                 </div>
                 <div className="font-semibold text-white text-sm leading-tight mb-1">{cat.name}</div>
-                <div className="text-xs text-gray-500">{cat.count} titles</div>
+                <div className="text-xs text-gray-500">{cat.count} titres</div>
               </button>
             ))}
           </div>
@@ -211,8 +461,8 @@ function WatchlistPage({ watchlist, onMovieClick, onToggleWatchlist }: {
   return (
     <div className="px-8 md:px-16 pt-10 pb-20">
       <div className="mb-8 fade-in-up">
-        <h1 className="font-display text-5xl text-white mb-2">MY <span className="text-[#e63946]">WATCHLIST</span></h1>
-        <p className="text-gray-400">{wlMovies.length} titles saved</p>
+        <h1 className="font-display text-5xl text-white mb-2">MA <span className="text-[#e63946]">LISTE</span></h1>
+        <p className="text-gray-400">{wlMovies.length} titre{wlMovies.length !== 1 ? 's' : ''} sauvegardé{wlMovies.length !== 1 ? 's' : ''}</p>
       </div>
 
       {wlMovies.length === 0 ? (
@@ -220,14 +470,14 @@ function WatchlistPage({ watchlist, onMovieClick, onToggleWatchlist }: {
           <div className="w-20 h-20 rounded-full bg-[#1a1a1a] flex items-center justify-center mb-4">
             <Icon name="Bookmark" size={32} className="text-gray-600" />
           </div>
-          <h3 className="font-display text-3xl text-gray-400 mb-2">NOTHING SAVED YET</h3>
-          <p className="text-gray-600 text-sm">Browse titles and click the bookmark icon to save them here</p>
+          <h3 className="font-display text-3xl text-gray-400 mb-2">RIEN DE SAUVEGARDÉ</h3>
+          <p className="text-gray-600 text-sm">Parcourez les titres et cliquez sur le signet pour les sauvegarder ici</p>
         </div>
       ) : (
         <>
           {wlMovies.filter(m => m.progress > 0).length > 0 && (
             <section className="mb-10">
-              <h2 className="font-display text-2xl text-white mb-5 tracking-wide">IN <span className="text-[#e63946]">PROGRESS</span></h2>
+              <h2 className="font-display text-2xl text-white mb-5 tracking-wide">EN <span className="text-[#e63946]">COURS</span></h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {wlMovies.filter(m => m.progress > 0).map(m => (
                   <div key={m.id} className="space-y-2">
@@ -235,16 +485,15 @@ function WatchlistPage({ watchlist, onMovieClick, onToggleWatchlist }: {
                     <div className="progress-bar">
                       <div className="progress-fill" style={{ width: `${m.progress}%` }} />
                     </div>
-                    <div className="text-xs text-gray-500">{m.progress}% watched</div>
+                    <div className="text-xs text-gray-500">{m.progress}% visionné</div>
                   </div>
                 ))}
               </div>
             </section>
           )}
-
           {wlMovies.filter(m => m.progress === 0).length > 0 && (
             <section className="mb-16">
-              <h2 className="font-display text-2xl text-white mb-5 tracking-wide">SAVED TO <span className="text-[#e63946]">WATCH</span></h2>
+              <h2 className="font-display text-2xl text-white mb-5 tracking-wide">À <span className="text-[#e63946]">REGARDER</span></h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {wlMovies.filter(m => m.progress === 0).map(m => (
                   <MovieCard key={m.id} movie={m} onClick={() => onMovieClick(m)} inWatchlist={true} onToggleWatchlist={onToggleWatchlist} />
@@ -260,26 +509,25 @@ function WatchlistPage({ watchlist, onMovieClick, onToggleWatchlist }: {
 
 function ProfilePage() {
   const stats = [
-    { label: 'Hours Watched', value: '347', icon: 'Clock' },
-    { label: 'Titles Seen', value: '89', icon: 'Film' },
-    { label: 'Watchlist', value: '24', icon: 'Bookmark' },
-    { label: 'Reviews', value: '12', icon: 'Star' },
+    { label: 'Heures vues', value: '347', icon: 'Clock' },
+    { label: 'Films vus', value: '89', icon: 'Film' },
+    { label: 'Ma liste', value: '24', icon: 'Bookmark' },
+    { label: 'Avis', value: '12', icon: 'Star' },
   ];
   const genres = [
     { name: 'Sci-Fi', pct: 38 },
     { name: 'Thriller', pct: 27 },
-    { name: 'Drama', pct: 20 },
+    { name: 'Drame', pct: 20 },
     { name: 'Action', pct: 15 },
   ];
   const recentActivity = [
-    { title: 'Eclipse Protocol', action: 'Watched 65%', time: '2 hours ago', img: SCIFI_IMG },
-    { title: 'Ghost Protocol', action: 'Completed', time: 'Yesterday', img: GRID_IMG },
-    { title: 'Noir City', action: 'Rated 8/10', time: '3 days ago', img: HERO_IMG },
+    { title: 'Interstellar', action: 'Visionné 65%', time: 'Il y a 2h', img: movies[0].img },
+    { title: 'The Matrix', action: 'Terminé', time: 'Hier', img: movies[4].img },
+    { title: 'The Dark Knight', action: 'Note : 9/10', time: 'Il y a 3 jours', img: movies[2].img },
   ];
 
   return (
     <div className="px-8 md:px-16 pt-10 pb-20">
-      {/* Header */}
       <div className="flex items-center gap-6 mb-10 fade-in-up">
         <div className="relative">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#e63946] to-red-800 flex items-center justify-center text-3xl font-display text-white">
@@ -289,18 +537,17 @@ function ProfilePage() {
         </div>
         <div>
           <h1 className="font-display text-4xl text-white leading-none">ALEX MORGAN</h1>
-          <p className="text-gray-400 text-sm mt-1">Premium Member · Joined Jan 2023</p>
+          <p className="text-gray-400 text-sm mt-1">Membre Premium · Depuis jan. 2023</p>
           <div className="flex items-center gap-2 mt-2">
             <span className="px-2 py-0.5 rounded bg-[#e63946]/20 border border-[#e63946]/30 text-[#e63946] text-xs font-semibold">PREMIUM</span>
           </div>
         </div>
         <button className="ml-auto glass px-4 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2">
           <Icon name="Settings" size={14} />
-          Edit Profile
+          Modifier
         </button>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 fade-in-up-1">
         {stats.map(s => (
           <div key={s.label} className="glass rounded-xl p-5 text-center">
@@ -314,9 +561,8 @@ function ProfilePage() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Genre Taste */}
         <div className="glass rounded-2xl p-6 fade-in-up-2">
-          <h3 className="font-display text-2xl text-white mb-6 tracking-wide">GENRE <span className="text-[#e63946]">TASTE</span></h3>
+          <h3 className="font-display text-2xl text-white mb-6 tracking-wide">MES <span className="text-[#e63946]">GENRES</span></h3>
           <div className="space-y-4">
             {genres.map(g => (
               <div key={g.name}>
@@ -332,9 +578,8 @@ function ProfilePage() {
           </div>
         </div>
 
-        {/* Recent Activity */}
         <div className="glass rounded-2xl p-6 fade-in-up-3">
-          <h3 className="font-display text-2xl text-white mb-6 tracking-wide">RECENT <span className="text-[#e63946]">ACTIVITY</span></h3>
+          <h3 className="font-display text-2xl text-white mb-6 tracking-wide">ACTIVITÉ <span className="text-[#e63946]">RÉCENTE</span></h3>
           <div className="space-y-4">
             {recentActivity.map((item, i) => (
               <div key={i} className="flex items-center gap-4">
@@ -349,22 +594,21 @@ function ProfilePage() {
           </div>
         </div>
 
-        {/* Subscription */}
         <div className="glass rounded-2xl p-6 fade-in-up-4 md:col-span-2">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h3 className="font-display text-2xl text-white tracking-wide mb-1">PREMIUM <span className="text-[#e63946]">PLAN</span></h3>
-              <p className="text-gray-400 text-sm">Next billing: June 20, 2026 · $14.99/month</p>
+              <h3 className="font-display text-2xl text-white tracking-wide mb-1">ABONNEMENT <span className="text-[#e63946]">PREMIUM</span></h3>
+              <p className="text-gray-400 text-sm">Prochain paiement : 20 juin 2026 · 14,99 €/mois</p>
             </div>
             <div className="flex gap-3">
-              <button className="glass px-4 py-2 rounded-lg text-sm text-gray-300 hover:text-white transition-all">Manage</button>
+              <button className="glass px-4 py-2 rounded-lg text-sm text-gray-300 hover:text-white transition-all">Gérer</button>
               <button className="bg-[#e63946] hover:bg-red-400 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                Upgrade Plan
+                Changer de plan
               </button>
             </div>
           </div>
           <div className="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-white/5">
-            {['4K Ultra HD', 'Offline Downloads', 'No Ads'].map(f => (
+            {['4K Ultra HD', 'Téléchargements', 'Sans publicité'].map(f => (
               <div key={f} className="flex items-center gap-2 text-sm text-gray-400">
                 <Icon name="Check" size={14} className="text-[#e63946]" />
                 {f}
@@ -377,11 +621,12 @@ function ProfilePage() {
   );
 }
 
-function MovieModal({ movie, onClose, inWatchlist, onToggleWatchlist }: {
+function MovieModal({ movie, onClose, inWatchlist, onToggleWatchlist, onPlay }: {
   movie: Movie;
   onClose: () => void;
   inWatchlist: boolean;
   onToggleWatchlist: (id: number) => void;
+  onPlay: () => void;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6" onClick={onClose}>
@@ -390,8 +635,8 @@ function MovieModal({ movie, onClose, inWatchlist, onToggleWatchlist }: {
         className="relative w-full md:max-w-2xl glass rounded-t-3xl md:rounded-2xl overflow-hidden animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative h-56 md:h-72">
-          <img src={movie.img} alt={movie.title} className="w-full h-full object-cover" />
+        <div className="relative h-56 md:h-64">
+          <img src={movie.backdrop || movie.img} alt={movie.title} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
           <button
             className="absolute top-4 right-4 w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all"
@@ -406,6 +651,15 @@ function MovieModal({ movie, onClose, inWatchlist, onToggleWatchlist }: {
               </div>
             </div>
           )}
+          {/* Play overlay */}
+          <button
+            onClick={onPlay}
+            className="absolute inset-0 flex items-center justify-center group"
+          >
+            <div className="w-14 h-14 rounded-full bg-[#e63946]/80 group-hover:bg-[#e63946] flex items-center justify-center transition-all hover:scale-110">
+              <Icon name="Play" size={24} className="text-white" />
+            </div>
+          </button>
         </div>
         <div className="p-6">
           <div className="flex items-start justify-between mb-2">
@@ -418,13 +672,14 @@ function MovieModal({ movie, onClose, inWatchlist, onToggleWatchlist }: {
             <span>·</span>
             <span>{movie.duration}</span>
           </div>
-          <p className="text-gray-300 text-sm leading-relaxed mb-6">
-            A gripping cinematic experience that pushes the limits of storytelling. Masterfully crafted with stunning visuals and an unforgettable score.
-          </p>
+          <p className="text-gray-300 text-sm leading-relaxed mb-6 line-clamp-3">{movie.description}</p>
           <div className="flex gap-3">
-            <button className="flex-1 flex items-center justify-center gap-2 bg-[#e63946] hover:bg-red-400 text-white font-semibold py-3 rounded-xl transition-all hover:scale-105 active:scale-95">
+            <button
+              className="flex-1 flex items-center justify-center gap-2 bg-[#e63946] hover:bg-red-400 text-white font-semibold py-3 rounded-xl transition-all hover:scale-105 active:scale-95"
+              onClick={onPlay}
+            >
               <Icon name="Play" size={18} />
-              {movie.progress > 0 ? `Resume (${movie.progress}%)` : 'Play Now'}
+              {movie.progress > 0 ? `Reprendre (${movie.progress}%)` : 'Regarder'}
             </button>
             <button
               className={`w-14 flex items-center justify-center rounded-xl border transition-all ${inWatchlist ? 'border-[#e63946] bg-[#e63946]/10 text-[#e63946]' : 'border-white/10 glass text-gray-300 hover:text-white'}`}
@@ -446,15 +701,21 @@ export default function Index() {
   const [page, setPage] = useState<Page>('home');
   const [watchlist, setWatchlist] = useState<number[]>(defaultWatchlist);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [playingMovie, setPlayingMovie] = useState<Movie | null>(null);
 
   const toggleWatchlist = (id: number) => {
     setWatchlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
+  const handlePlay = (movie: Movie) => {
+    setSelectedMovie(null);
+    setPlayingMovie(movie);
+  };
+
   const navItems: { id: Page; icon: string; label: string }[] = [
-    { id: 'home', icon: 'Home', label: 'Home' },
-    { id: 'watchlist', icon: 'Bookmark', label: 'Watchlist' },
-    { id: 'profile', icon: 'User', label: 'Profile' },
+    { id: 'home', icon: 'Home', label: 'Accueil' },
+    { id: 'watchlist', icon: 'Bookmark', label: 'Ma liste' },
+    { id: 'profile', icon: 'User', label: 'Profil' },
   ];
 
   return (
@@ -465,8 +726,6 @@ export default function Index() {
           <div className="font-display text-2xl tracking-widest text-white">
             N<span className="text-[#e63946]">O</span>IR
           </div>
-
-          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map(item => (
               <button
@@ -482,7 +741,6 @@ export default function Index() {
               </button>
             ))}
           </nav>
-
           <div className="flex items-center gap-3">
             <button className="w-9 h-9 rounded-full glass flex items-center justify-center text-gray-400 hover:text-white transition-all">
               <Icon name="Search" size={16} />
@@ -500,7 +758,6 @@ export default function Index() {
         </div>
       </header>
 
-      {/* Page Content */}
       <main className="pt-16">
         {page === 'home' && (
           <HomePage onMovieClick={setSelectedMovie} watchlist={watchlist} onToggleWatchlist={toggleWatchlist} />
@@ -528,12 +785,21 @@ export default function Index() {
       </nav>
 
       {/* Movie Modal */}
-      {selectedMovie && (
+      {selectedMovie && !playingMovie && (
         <MovieModal
           movie={selectedMovie}
           onClose={() => setSelectedMovie(null)}
           inWatchlist={watchlist.includes(selectedMovie.id)}
           onToggleWatchlist={toggleWatchlist}
+          onPlay={() => handlePlay(selectedMovie)}
+        />
+      )}
+
+      {/* Video Player */}
+      {playingMovie && (
+        <VideoPlayer
+          movie={playingMovie}
+          onClose={() => setPlayingMovie(null)}
         />
       )}
     </div>
