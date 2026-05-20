@@ -141,10 +141,12 @@ function isDirectVideo(url: string) {
 function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState('0:00');
   const [duration, setDuration] = useState('0:00');
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const isDirect = movie.videoUrl ? isDirectVideo(movie.videoUrl) : false;
 
@@ -183,12 +185,24 @@ function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) 
   }
 
   function fullscreen() {
-    if (isDirect) {
-      videoRef.current?.requestFullscreen();
+    const el = isDirect ? videoRef.current : playerContainerRef.current;
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      el.requestFullscreen().catch(() => {
+        window.open(movie.videoUrl, '_blank');
+      });
     } else {
-      iframeRef.current?.requestFullscreen();
+      document.exitFullscreen();
     }
   }
+
+  useEffect(() => {
+    function onFsChange() {
+      setIsFullscreen(!!document.fullscreenElement);
+    }
+    document.addEventListener('fullscreenchange', onFsChange);
+    return () => document.removeEventListener('fullscreenchange', onFsChange);
+  }, []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -252,15 +266,16 @@ function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) 
           )}
 
           {movie.videoUrl && !isDirect && (
-            <iframe
-              ref={iframeRef}
-              src={movie.videoUrl}
-              className="w-full border-0"
-              style={{ height: '72vh', minHeight: 420 }}
-              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-              allowFullScreen
-              title={movie.title}
-            />
+            <div ref={playerContainerRef} className="relative w-full" style={{ height: '72vh', minHeight: 420, background: '#000' }}>
+              <iframe
+                ref={iframeRef}
+                src={movie.videoUrl}
+                className="w-full h-full border-0"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                allowFullScreen
+                title={movie.title}
+              />
+            </div>
           )}
         </div>
 
@@ -291,8 +306,8 @@ function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) 
                 onClick={fullscreen}
                 className="glass px-3 py-1.5 rounded-lg text-gray-300 hover:text-white text-sm flex items-center gap-2 transition-all"
               >
-                <Icon name="Maximize" size={14} />
-                Plein écran
+                <Icon name={isFullscreen ? "Minimize" : "Maximize"} size={14} />
+                {isFullscreen ? 'Quitter' : 'Plein écran'}
               </button>
             </div>
           </div>
@@ -305,8 +320,8 @@ function VideoPlayer({ movie, onClose }: { movie: Movie; onClose: () => void }) 
               onClick={fullscreen}
               className="glass px-4 py-2 rounded-lg text-gray-300 hover:text-white text-sm flex items-center gap-2 transition-all"
             >
-              <Icon name="Maximize" size={14} />
-              Plein écran
+              <Icon name={isFullscreen ? "Minimize" : "Maximize"} size={14} />
+              {isFullscreen ? 'Quitter le plein écran' : 'Plein écran'}
             </button>
           </div>
         )}
