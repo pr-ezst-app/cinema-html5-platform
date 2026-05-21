@@ -55,7 +55,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/4cDFJr4HnXN5AdPw4AKrmLlMWdO.jpg`,
     description: "Los Angeles. Alors que Pumpkin et Honey Bunny braquent un restaurant, Jules et Vincent, deux tueurs à la solde de Marsellus Wallace, récupèrent une mallette pour leur patron.",
     progress: 0,
-    videoUrl: ''
+    videoUrl: 'https://www.nakastream.tv/player?title=Pulp%20Fiction&id=791&poster=/4TBdF7nFw2aKNM0gPOlDNq3v3se.jpg&type=movie'
   },
   {
     id: 5,
