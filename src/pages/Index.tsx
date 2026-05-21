@@ -81,7 +81,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg`,
     description: "Toute la famille de Ki-taek est au chômage. Elle s'intéresse à la richissime famille Park, quand leur fils Ki-woo est recommandé pour être tuteur en anglais de leur fille. Une opportunité qui va engendrer des événements inattendus.",
     progress: 0,
-    videoUrl: ''
+    videoUrl: 'https://www.nakastream.tv/player?title=Parasite&id=626&poster=/7hLSzZX2jROmEXz2aEoh6JKUFy2.jpg&type=movie'
   },
   {
     id: 7,
