@@ -94,7 +94,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/hZkgoQYus5vegHoetLkCJzb17zJ.jpg`,
     description: "Un employé de bureau insomniaque et dépressif rencontre un vendeur de savon charismatique nommé Tyler Durden. Ensemble, ils forment un club de combat clandestin.",
     progress: 0,
-    videoUrl: ''
+    videoUrl: 'https://www.nakastream.tv/player?title=Fight%20Club&id=1332&poster=/t1i10ptOivG4hV7erkX3tmKpiqm.jpg&type=movie'
   },
   {
     id: 8,
