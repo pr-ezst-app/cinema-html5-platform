@@ -68,7 +68,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/fNG7i7RqMErkcqhohV2a6cV1Ehy.jpg`,
     description: "Thomas Anderson mène une double vie : le jour il travaille dans une entreprise d'informatique, et la nuit il est un hacker qui se fait appeler Neo. Un homme nommé Morpheus lui révèle la vérité sur le monde.",
     progress: 88,
-    videoUrl: ''
+    videoUrl: 'https://www.nakastream.tv/player?title=Matrix&id=551&poster=/pEoqbqtLc4CcwDUDqxmEDSWpWTZ.jpg&type=movie'
   },
   {
     id: 6,
