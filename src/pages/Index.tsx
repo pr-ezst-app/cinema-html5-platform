@@ -107,7 +107,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/6WBIzCgmDCYrqh64yDREGeDk9d3.jpg`,
     description: "Maximus est le général le plus respecté de Rome. Trahi et condamné à mort par Commode, fils de l'Empereur, il survit et devient gladiateur pour venger sa famille et son honneur.",
     progress: 0,
-    videoUrl: ''
+    videoUrl: 'https://www.nakastream.tv/player?title=Gladiator&id=642&poster=/5gJOu3t2QrznuJqjCG7FQDMI76t.jpg&type=movie'
   },
 ];
 
