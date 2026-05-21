@@ -29,7 +29,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/s3TBrRGB1iav7gFOCNx3H31MoES.jpg`,
     description: "Un voleur qui s'immisce dans les rêves de ses cibles pour leur dérober leurs secrets se voit proposer une mission encore plus complexe : implanter une idée dans l'esprit de quelqu'un.",
     progress: 0,
-    videoUrl: ''
+    videoUrl: 'https://www.nakastream.tv/player?title=Inception&id=641&poster=/aej3LRUga5rhgkmRP6XMFw3ejbl.jpg&type=movie'
   },
   {
     id: 3,
