@@ -42,7 +42,7 @@ const movies = [
     backdrop: `${TMDB_BACK}/hkBaDkMWbLaf8B1lsWsqX7an5lu.jpg`,
     description: "Batman relève le plus grand défi de son existence avec l'aide du lieutenant Gordon et du procureur Harvey Dent lorsque le Joker, un criminel sadique et ingénieux, plonge Gotham City dans le chaos.",
     progress: 30,
-    videoUrl: ''
+    videoUrl: 'https://www.nakastream.tv/player?title=The%20Dark%20Knight%20%3A%20Le%20Chevalier%20noir&id=679&poster=/pyNXnq8QBWoK3b37RS6C3axwUOy.jpg&type=movie'
   },
   {
     id: 4,
