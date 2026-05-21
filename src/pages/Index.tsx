@@ -109,6 +109,19 @@ const movies = [
     progress: 0,
     videoUrl: 'https://www.nakastream.tv/player?title=Gladiator&id=642&poster=/5gJOu3t2QrznuJqjCG7FQDMI76t.jpg&type=movie'
   },
+  {
+    id: 9,
+    title: 'Avatar : De feu et de cendres',
+    genre: 'Sci-Fi',
+    year: 2025,
+    rating: 7.5,
+    duration: '2h 36m',
+    img: `${TMDB}/5eATVqK2WVQi0D3wjzM5OP8EqZv.jpg`,
+    backdrop: `${TMDB_BACK}/5eATVqK2WVQi0D3wjzM5OP8EqZv.jpg`,
+    description: "Jake Sully et Neytiri font face à une nouvelle menace sur Pandora. Ils devront s'allier avec les peuples des volcans pour repousser les forces qui cherchent à détruire leur monde.",
+    progress: 0,
+    videoUrl: 'https://www.nakastream.tv/player?title=Avatar%20%3A%20De%20feu%20et%20de%20cendres&id=1374&poster=/5eATVqK2WVQi0D3wjzM5OP8EqZv.jpg&type=movie'
+  },
 ];
 
 const categories = [
