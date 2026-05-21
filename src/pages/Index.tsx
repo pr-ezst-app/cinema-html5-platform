@@ -116,8 +116,8 @@ const movies = [
     year: 2025,
     rating: 7.5,
     duration: '2h 36m',
-    img: `https://image.tmdb.org/t/p/w500/5eATVqK2WVQi0D3wjzM5OP8EqZv.jpg`,
-    backdrop: `https://image.tmdb.org/t/p/w1280/uKb22M5zJMlm9tJMnDHBWG0BYWK.jpg`,
+    img: 'https://fr.web.img6.acsta.net/img/52/fb/52fb8f0345af2b0940557aa049ca19fd.jpg',
+    backdrop: 'https://fr.web.img6.acsta.net/img/52/fb/52fb8f0345af2b0940557aa049ca19fd.jpg',
     description: "Jake Sully et Neytiri font face à une nouvelle menace sur Pandora. Ils devront s'allier avec les peuples des volcans pour repousser les forces qui cherchent à détruire leur monde.",
     progress: 0,
     videoUrl: 'https://www.nakastream.tv/player?title=Avatar%20%3A%20De%20feu%20et%20de%20cendres&id=1374&poster=/5eATVqK2WVQi0D3wjzM5OP8EqZv.jpg&type=movie'
